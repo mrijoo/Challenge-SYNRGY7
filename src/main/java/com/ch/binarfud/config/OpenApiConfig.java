@@ -13,8 +13,8 @@ import io.swagger.v3.oas.annotations.servers.Server;
         info = @Info(
                 contact = @Contact(
                         name = "BinarFud API Support",
-                        email = "dev@binarfud.com",
-                        url = "https://binarfud.com"
+                        email = "dev@binarfud.me",
+                        url = "https://binarfud.me"
                 ),
                 title = "BinarFud API",
                 version = "1.0",
@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 ),
                 @Server(
                         description = "Production",
-                        url = "https://api.binarfud.com"
+                        url = "https://binarfud.me"
                 )
         },
         security = {
