@@ -1,0 +1,59 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - deploy
+  workflow_run:
+    workflows: ["Update Deploy Branch"]
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: deploy
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker image
+      run: docker build . -t binarfud:latest
+
+    - name: Save Docker image to file
+      run: docker save binarfud:latest -o binarfud-image.tar
+
+    - name: Compress Docker image
+      run: tar -czvf binarfud-image.tar.gz binarfud-image.tar
+
+    - name: Install SSHpass
+      run: sudo apt-get install -y sshpass
+
+    - name: Transfer compressed Docker image to server
+      env:
+        SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        SERVER_USER: ${{ secrets.SERVER_USER }}
+        SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
+      run: |
+        sshpass -p "${SERVER_PASSWORD}" scp -o StrictHostKeyChecking=no -P ${SERVER_PORT} binarfud-image.tar.gz ${SERVER_USER}@${SERVER_HOST}:/home/${SERVER_USER}/github/binarfud/binarfud-image.tar.gz
+
+    - name: Deploy to server
+      env:
+        SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        SERVER_USER: ${{ secrets.SERVER_USER }}
+        SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
+      run: |
+        sshpass -p "${SERVER_PASSWORD}" ssh -o StrictHostKeyChecking=no -p ${SERVER_PORT} ${SERVER_USER}@${SERVER_HOST} << 'EOF'
+          cd ./github/binarfud
+          tar -xzvf binarfud-image.tar.gz
+          docker load -i binarfud-image.tar
+          docker-compose down
+          docker-compose up -d
+        EOF

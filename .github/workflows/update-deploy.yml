@@ -1,0 +1,42 @@
+name: Update Deploy Branch
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout main branch
+      uses: actions/checkout@v4
+      with:
+        ref: main
+
+    - name: Find the latest folder
+      id: find-latest-folder
+      run: |
+        latest_folder=$(ls -td F-BJV24001115-synergy7-abd-binfood-* | head -1)
+        echo "latest_folder=$latest_folder" >> $GITHUB_ENV
+
+    - name: Checkout deploy branch
+      uses: actions/checkout@v4
+      with:
+        ref: deploy
+        path: deploy
+
+    - name: Sync latest folder to deploy branch
+      run: |
+        rm -rf deploy/*
+        cp -r ${{ env.latest_folder }}/* deploy/
+
+    - name: Commit and push changes to deploy branch
+      run: |
+        cd deploy
+        git config --global user.email "${{ secrets.GH_EMAIL }}"
+        git config --global user.name "${{ secrets.GH_USERNAME }}"
+        git add .
+        git commit -m "Update deploy branch with latest folder: ${{ env.latest_folder }}"
+        git push origin deploy
