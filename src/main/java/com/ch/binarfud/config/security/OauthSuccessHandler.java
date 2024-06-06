@@ -51,6 +51,7 @@ public class OauthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             user.setEmail(email);
             user.setUsername(email);
             user.setRoles(Set.of(Role.Roles.USER));
+            user.setEnabled(true);
             userRepository.save(user);
         }
 
