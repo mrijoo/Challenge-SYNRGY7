@@ -1,0 +1,43 @@
+server:
+    port: 8081
+
+spring:
+    application:
+        name: security-service
+        security:
+            jwt:
+                secret-key: ${BINARFUD_JWT_SECRET_KEY}
+                expiration-time: ${BINARFUD_JWT_EXPIRATION_TIME}
+                refresh-token:
+                    secret-key: ${BINARFUD_JWT_REFRESH_TOKEN_SECRET_KEY}
+                    expiration-time: ${BINARFUD_JWT_REFRESH_TOKEN_EXPIRATION_TIME}
+    security:
+        oauth2:
+            client:
+                registration:
+                    google:
+                        client-id: ${BINARFUD_OAUTH2_GOOGLE_CLIENT_ID}
+                        client-secret: ${BINARFUD_OAUTH2_GOOGLE_CLIENT_SECRET}
+                        redirect-uri: ${BINARFUD_BASEURL:${baseUrl}}/login/oauth2/code/google
+    datasource:
+        url: jdbc:postgresql://${BINARFUD_DB_HOST}:${BINARFUD_DB_PORT}/${BINARFUD_DB_NAME}
+        username: ${BINARFUD_DB_USERNAME}
+        password: ${BINARFUD_DB_PASSWORD}
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+    jackson:
+        property-naming-strategy: SNAKE_CASE
+    kafka:
+        bootstrap-servers: ${BINARFUD_KAFKA_BOOTSTRAP_SERVERS}
+
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://localhost:8761/eureka
+    instance:
+        hostname: localhost
+        prefer-ip-address: true
