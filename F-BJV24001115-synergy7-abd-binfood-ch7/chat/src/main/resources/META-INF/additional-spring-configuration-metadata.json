@@ -1,0 +1,14 @@
+{
+    "properties": [
+        {
+            "name": "socket.server.host",
+            "type": "java.lang.String",
+            "description": "host name of the socket server"
+        },
+        {
+            "name": "socket.server.port",
+            "type": "java.lang.String",
+            "description": "port number of the socket server"
+        }
+    ]
+}
