@@ -1,0 +1,13 @@
+services:
+  app:
+    image: binarfud
+    build:
+      context: .
+    ports:
+      - "8083:8083"
+    environment:
+      - BINARFUD_DB_HOST=
+      - BINARFUD_DB_PORT=
+      - BINARFUD_DB_NAME=
+      - BINARFUD_DB_USERNAME=
+      - BINARFUD_DB_PASSWORD=

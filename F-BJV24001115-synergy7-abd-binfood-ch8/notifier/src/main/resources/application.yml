@@ -1,0 +1,22 @@
+server:
+    port: ${BINAR_NOTIFIER_PORT:8089}
+
+spring:
+    application:
+        name: notifier-service
+    mail:
+        host: ${BINAR_NOTIFIER_MAIL_HOST}
+        port: ${BINAR_NOTIFIER_MAIL_PORT}
+        username: ${BINAR_NOTIFIER_MAIL_USERNAME}
+        password: ${BINAR_NOTIFIER_MAIL_PASSWORD}
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+    kafka:
+        bootstrap-servers: ${BINAR_NOTIFIER_KAFKA_BOOTSTRAP_SERVERS}
+firebase:
+    credentials:
+        path: ${BINAR_NOTIFIER_FIREBASE_CREDENTIALS_PATH}

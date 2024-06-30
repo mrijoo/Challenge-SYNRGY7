@@ -1,0 +1,7 @@
+services:
+  app:
+    image: binar-registry
+    build:
+      context: .
+    ports:
+      - "8761:8761"
