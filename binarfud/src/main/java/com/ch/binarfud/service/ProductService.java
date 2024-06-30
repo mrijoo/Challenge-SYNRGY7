@@ -18,5 +18,7 @@ public interface ProductService {
 
     Product updateProduct(UUID id, UUID userId, UpdateProductDto updateProductDto);
 
+    Product updateProductStock(UUID id, int stock);
+
     void deleteProduct(UUID id, UUID userId);
 }

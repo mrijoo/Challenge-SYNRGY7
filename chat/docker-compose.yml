@@ -1,0 +1,7 @@
+services:
+  app:
+    image: binar-chat
+    build:
+      context: .
+    ports:
+      - "8082:8082"

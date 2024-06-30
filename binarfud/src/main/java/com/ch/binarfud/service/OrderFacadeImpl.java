@@ -20,6 +20,8 @@ import com.ch.binarfud.model.Product;
 import com.ch.binarfud.model.User;
 import com.ch.binarfud.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class OrderFacadeImpl implements OrderFacade {
     private final ModelMapper modelMapper;
@@ -106,19 +108,25 @@ public class OrderFacadeImpl implements OrderFacade {
         return orderResponseDto;
     }
 
+    @Transactional
     public OrderResponseDto addOrder(UUID userId, OrderDto orderDto) {
         User user = userRepository.findUserById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
         Map<UUID, Double> sellerTotalPriceMap = new HashMap<>();
         double totalOrderPrice = 0.0;
+        List<OrderResponseDto.OrderDetails> responseOrderDetails = new ArrayList<>();
 
         for (OrderDto.DetailOrder detailOrder : orderDto.getDetails()) {
             Product product = productService.getProductById(detailOrder.getProductId());
 
+            if (product.getStock() < detailOrder.getQuantity()) {
+                throw new IllegalArgumentException("Stock is not enough");
+            }
+
             double productTotalPrice = product.getPrice() * detailOrder.getQuantity();
             totalOrderPrice += productTotalPrice;
             UUID sellerId = product.getMerchant() != null ? product.getMerchant().getUserId() : null;
-
             sellerTotalPriceMap.put(sellerId, sellerTotalPriceMap.getOrDefault(sellerId, 0.0) + productTotalPrice);
         }
 
@@ -129,7 +137,6 @@ public class OrderFacadeImpl implements OrderFacade {
         for (Map.Entry<UUID, Double> entry : sellerTotalPriceMap.entrySet()) {
             UUID sellerId = entry.getKey();
             Double totalPrice = entry.getValue();
-
             if (sellerId != null) {
                 userService.transferBalance(user.getId(), sellerId, totalPrice);
             }
@@ -139,13 +146,13 @@ public class OrderFacadeImpl implements OrderFacade {
         newOrder.setUserId(user.getId());
         newOrder = orderService.addOrder(newOrder);
 
-        List<OrderResponseDto.OrderDetails> responseOrderDetails = new ArrayList<>();
-
         for (OrderDto.DetailOrder detailOrder : orderDto.getDetails()) {
             OrderDetail orderDetail = modelMapper.map(detailOrder, OrderDetail.class);
             orderDetail.setOrderId(newOrder.getId());
 
             Product product = productService.getProductById(detailOrder.getProductId());
+
+            productService.updateProductStock(product.getId(), product.getStock() - detailOrder.getQuantity());
 
             orderDetail.setProductName(product.getName());
             orderDetail.setPrice(product.getPrice());
@@ -162,5 +169,4 @@ public class OrderFacadeImpl implements OrderFacade {
 
         return orderResponseDto;
     }
-
 }

@@ -50,6 +50,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 ? authorizationHeaders.get(0).replace("Bearer ", "")
                 : null;
 
+                
+
         if (token != null) {
             return validateTokenWithSecurityService(token, exchange, chain);
         } else {

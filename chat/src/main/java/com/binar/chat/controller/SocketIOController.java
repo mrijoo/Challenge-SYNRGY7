@@ -41,8 +41,6 @@ public class SocketIOController {
                 message.setFrom(userId);
             }
 
-            System.out.println(message);
-
             socketIOServer.getBroadcastOperations().sendEvent(message.getTo(), message.getMessage());
             ackRequest.sendAckData("Message sent to " + message.getTo());
         }

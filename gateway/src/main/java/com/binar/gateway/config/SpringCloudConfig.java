@@ -12,7 +12,7 @@ public class SpringCloudConfig {
         @Bean
         public RouteLocator gatewayRoutes(RouteLocatorBuilder builder, AuthenticationFilter authFilter) {
                 return builder.routes()
-                                .route("security-service", r -> r.path("/auth/**")
+                                .route("security-service", r -> r.path("/login/**","/oauth2/**","/auth/**")
                                                 .uri("lb://security-service"))
                                 .route("binarfud-service", r -> r.path("/binarfud/**")
                                                 .filters(f -> f.filter(

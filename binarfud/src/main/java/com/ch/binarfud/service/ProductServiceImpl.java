@@ -80,6 +80,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product updateProductStock(UUID id, int stock) {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Product not found"));
+        existingProduct.setStock(stock);
+        return productRepository.save(existingProduct);
+    }
+
+    @Override
     public void deleteProduct(UUID id, UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("User with id " + userId + " not found"));

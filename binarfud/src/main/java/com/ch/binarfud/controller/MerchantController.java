@@ -39,7 +39,7 @@ public class MerchantController {
         this.merchantService = merchantService;
     }
 
-    @GetMapping
+    @GetMapping("/_public")
     public ResponseEntity<Object> getAllMerchant(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Page<MerchantResponseDto> merchantsPage = merchantService.getAllMerchant(page, size);

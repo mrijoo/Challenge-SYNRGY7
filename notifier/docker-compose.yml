@@ -1,0 +1,14 @@
+services:
+  app:
+    image: binar-notifier
+    build:
+      context: .
+    ports:
+      - "8089:8089"
+    environment:
+      - BINAR_NOTIFIER_MAIL_HOST=
+      - BINAR_NOTIFIER_MAIL_PORT=
+      - BINAR_NOTIFIER_MAIL_USERNAME=
+      - BINAR_NOTIFIER_MAIL_PASSWORD=
+      - BINAR_NOTIFIER_KAFKA_BOOTSTRAP_SERVERS=
+      - BINAR_NOTIFIER_FIREBASE_CREDENTIALS_PATH=

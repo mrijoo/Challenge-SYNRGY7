@@ -26,7 +26,6 @@ import com.ch.binarfud.repository.MerchantRepository;
 import com.ch.binarfud.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import feign.FeignException.FeignClientException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -128,9 +127,7 @@ public class MerchantServiceImpl implements MerchantService {
                 addIdentityDto.setFullName(registerMerchant.getFullName());
                 addIdentityDto.setIdNumber(registerMerchant.getIdNumber());
 
-                System.out.println("Sending request to add identity...");
                 ResponseEntity<String> addIdentityResponse = securityServiceClient.addIdentity(addIdentityDto);
-                System.out.println("Received response: " + addIdentityResponse.getStatusCode());
 
                 if (addIdentityResponse.getStatusCode() == HttpStatus.CREATED) {
                     return "Request to become a merchant has been sent.";
@@ -174,7 +171,6 @@ public class MerchantServiceImpl implements MerchantService {
     // userIdentityRepository.save(userIdentity);
 
     // User user = userIdentity.getUser();
-    // System.out.println(user.getId());
     // // user.getRoles().add(Role.Roles.MERCHANT);
 
     // userRepository.save(user);

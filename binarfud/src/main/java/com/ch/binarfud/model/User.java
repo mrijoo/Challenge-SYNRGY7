@@ -20,6 +20,15 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE users SET deleted_at = NOW() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
+@NamedStoredProcedureQuery(
+    name = "transfer_balance",
+    procedureName = "transfer_balance",
+    parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "sender_id", type = UUID.class),
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "receiver_id", type = UUID.class),
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "amount", type = Double.class)
+    }
+)
 public class User extends BaseEntity {
     @Id
     private UUID id;

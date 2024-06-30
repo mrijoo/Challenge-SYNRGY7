@@ -9,6 +9,9 @@ import com.ch.binarfud.service.UserService;
 import com.ch.binarfud.stream.data.register.UserRegisterDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class MessageConsumer {
     private ObjectMapper objectMapper;
@@ -26,7 +29,7 @@ public class MessageConsumer {
             UUID userId = UUID.fromString(objectMapper.readValue(message, UserRegisterDto.class).getUserId());
             userService.addUser(userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to consume message from Kafka", e);
         }
     }
 }

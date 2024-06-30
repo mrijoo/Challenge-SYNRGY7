@@ -35,7 +35,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public IdentityResponseDto addUserIdentity(AddIdentityDto addIdentityDto) {
-        System.out.println(userIdentityRepository.findByUserId(addIdentityDto.getUserId()));
         if (userIdentityRepository.findByUserId(addIdentityDto.getUserId()) != null) {
             throw new IllegalStateException("User identity already exists");
         }
